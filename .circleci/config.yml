@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: curiostack/java-cloud-builder@sha256:591b94609a9804b987725709f7d0f3d77d26eb9de62ef308ec7f31cd0b20e814
+      - image: curiostack/java-cloud-builder@sha256:58fc594919c865b05519029b6d9e91098ddde861b3618b8d40cbe53094506e50
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images

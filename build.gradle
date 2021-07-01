@@ -18,8 +18,6 @@
  */
 
 
-
-
 import com.google.common.io.CharStreams
 import com.google.common.io.LineProcessor
 
@@ -44,6 +42,7 @@ buildscript {
 apply plugin: 'org.curioswitch.gradle-curiostack-plugin'
 apply plugin: 'org.curioswitch.gradle-golang-plugin'
 apply plugin: 'org.curioswitch.gradle-grpc-api-plugin'
+apply plugin: "org.curioswitch.gradle-conda-buildenv-plugin"
 
 repositories {
     jcenter()
@@ -51,45 +50,43 @@ repositories {
 }
 
 conda {
-    buildenv{
-        gnuradio {
-            version = 'Miniconda2-4.4.10'
-            packages = [
-                    'autoconf',
-                    'automake',
-                    'boost',
-                    'cmake',
-                    'gcc_linux-64',
-                    'gfortran_linux-64',
-                    'gxx_linux-64',
-                    'git',
-                    'gsl',
-                    'libtool',
-                    'llvm',
-                    'make',
-                    'numpy',
-                    'pkg-config',
-                    'protobuf',
-                    'subprocess32',
-                    'swig',
-                    'wget',
-                    'libpng',
-            ]
-            pythonPackages = [
-                    'cheetah',
-                    'construct',
-                    'google-auth',
-                    'grpcio',
-                    'grpcio-testing',
-                    'lxml',
-                    'mako',
-                    'matplotlib',
-                    'pybombs',
-                    'requests',
-                    'ruamel.yaml==0.15.51',
-                    'stellarstation',
-            ]
-        }
+    gnuradio {
+        version = 'Miniconda2-4.4.10'
+        packages = [
+                'autoconf',
+                'automake',
+                'boost',
+                'cmake',
+                'gcc_linux-64',
+                'gfortran_linux-64',
+                'gxx_linux-64',
+                'git',
+                'gsl',
+                'libtool',
+                'llvm',
+                'make',
+                'numpy',
+                'pkg-config',
+                'protobuf',
+                'subprocess32',
+                'swig',
+                'wget',
+                'libpng',
+        ]
+        pythonPackages = [
+                'cheetah',
+                'construct',
+                'google-auth',
+                'grpcio',
+                'grpcio-testing',
+                'lxml',
+                'mako',
+                'matplotlib',
+                'pybombs',
+                'requests',
+                'ruamel.yaml==0.15.51',
+                'stellarstation',
+        ]
     }
 }
 
@@ -169,7 +166,7 @@ task installRice(type: org.curioswitch.gradle.golang.tasks.GoTask) {
     args 'get', 'github.com/GeertJohan/go.rice/rice@c02ca9a983da5807ddf7d796784928f5be4afd09'
 }
 
-task useRice(type:Exec) {
+task useRice(type: Exec) {
     dependsOn installRice
     inputs.dir 'flowgraphs'
     outputs.file 'cmd/rice-box.go'
@@ -180,10 +177,10 @@ task useRice(type:Exec) {
 
 afterEvaluate {
     tasks.generateProto.dependsOn installProtocGoPlugin
-    tasks.withType(org.curioswitch.gradle.golang.tasks.GoTask).configureEach {task->
+    tasks.withType(org.curioswitch.gradle.golang.tasks.GoTask).configureEach { task ->
         if (task.name.startsWith('goBuild') || task.name == 'goTest') {
             task.dependsOn tasks.generateProto, useRice
-            task.execCustomizer {exec->
+            task.execCustomizer { exec ->
                 exec.environment 'PKG_CONFIG_PATH', "${gnuradioRoot}/lib/pkgconfig"
                 exec.environment 'CPLUS_INCLUDE_PATH', "${gnuradioRoot}/include"
             }
@@ -205,7 +202,7 @@ task setupPrefix(type: org.curioswitch.gradle.conda.tasks.CondaExecTask) {
         ${gnuradioRoot}/lib/uhd/utils/uhd_images_downloader.py
     """
 
-    execCustomizer {exec->
+    execCustomizer { exec ->
         // For some reason, cmake has trouble finding boost in certain situations.
         exec.environment 'BOOST_ROOT', gnuradioRoot
         exec.environment 'PKG_CONFIG_PATH', "${gnuradioRoot}/lib/pkgconfig"
@@ -282,7 +279,7 @@ task compileGrStarcoder(type: org.curioswitch.gradle.conda.tasks.CondaExecTask) 
         make
     """
 
-    execCustomizer {exec->
+    execCustomizer { exec ->
         exec.workingDir project.file('build/starcoder-cmake')
         exec.environment 'PKG_CONFIG_PATH', "${gnuradioRoot}/lib/pkgconfig"
     }
@@ -299,7 +296,7 @@ task installGrStarcoder(type: org.curioswitch.gradle.conda.tasks.CondaExecTask) 
 
     command 'make install'
 
-    execCustomizer {exec->
+    execCustomizer { exec ->
         exec.workingDir project.file('build/starcoder-cmake')
         exec.environment 'PKG_CONFIG_PATH', "${gnuradioRoot}/lib/pkgconfig"
     }
@@ -312,7 +309,7 @@ task testGrStarcoder(type: org.curioswitch.gradle.conda.tasks.CondaExecTask) {
 
     command 'make test ARGS=-VV'
 
-    execCustomizer {exec->
+    execCustomizer { exec ->
         exec.workingDir project.file('build/starcoder-cmake')
         exec.environment 'PKG_CONFIG_PATH', "${gnuradioRoot}/lib/pkgconfig"
     }
@@ -327,7 +324,7 @@ task compileGrStarcoderUtils(type: org.curioswitch.gradle.conda.tasks.CondaExecT
         make
     """
 
-    execCustomizer {exec->
+    execCustomizer { exec ->
         exec.workingDir project.file('build/starcoder_utils-cmake')
         exec.environment 'PKG_CONFIG_PATH', "${gnuradioRoot}/lib/pkgconfig"
     }
@@ -344,7 +341,7 @@ task installGrStarcoderUtils(type: org.curioswitch.gradle.conda.tasks.CondaExecT
 
     command 'make install'
 
-    execCustomizer {exec->
+    execCustomizer { exec ->
         exec.workingDir project.file('build/starcoder_utils-cmake')
         exec.environment 'PKG_CONFIG_PATH', "${gnuradioRoot}/lib/pkgconfig"
     }
@@ -357,7 +354,7 @@ task testGrStarcoderUtils(type: org.curioswitch.gradle.conda.tasks.CondaExecTask
 
     command 'make test ARGS=-VV'
 
-    execCustomizer {exec->
+    execCustomizer { exec ->
         exec.workingDir project.file('build/starcoder_utils-cmake')
         exec.environment 'PKG_CONFIG_PATH', "${gnuradioRoot}/lib/pkgconfig"
     }
@@ -374,7 +371,7 @@ task installGrStarcoderFromRecipe(type: org.curioswitch.gradle.conda.tasks.Conda
 
     command 'pybombs -y install gr-starcoder'
 
-    execCustomizer {exec->
+    execCustomizer { exec ->
         exec.environment 'PKG_CONFIG_PATH', "${gnuradioRoot}/lib/pkgconfig"
         exec.environment 'PYBOMBS_PREFIX', gnuradioRoot
     }
@@ -387,7 +384,7 @@ task installStarcoder(type: Copy) {
 }
 
 task install {
-    dependsOn installGrStarcoder, installGrStarcoderUtils, installStarcoder
+    dependsOn condaInstallPackagesMiniconda2Build ,installGrStarcoder, installGrStarcoderUtils, installStarcoder
 }
 
 task clangFormat(type: org.curioswitch.gradle.conda.tasks.CondaExecTask) {

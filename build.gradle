@@ -51,44 +51,45 @@ repositories {
 }
 
 conda {
-    buildenv{}
-    gnuradio {
-        version = 'Miniconda2-4.4.10'
-        packages = [
-                'autoconf',
-                'automake',
-                'boost',
-                'cmake',
-                'gcc_linux-64',
-                'gfortran_linux-64',
-                'gxx_linux-64',
-                'git',
-                'gsl',
-                'libtool',
-                'llvm',
-                'make',
-                'numpy',
-                'pkg-config',
-                'protobuf',
-                'subprocess32',
-                'swig',
-                'wget',
-                'libpng',
-        ]
-        pythonPackages = [
-                'cheetah',
-                'construct',
-                'google-auth',
-                'grpcio',
-                'grpcio-testing',
-                'lxml',
-                'mako',
-                'matplotlib',
-                'pybombs',
-                'requests',
-                'ruamel.yaml==0.15.51',
-                'stellarstation',
-        ]
+    buildenv{
+        gnuradio {
+            version = 'Miniconda2-4.4.10'
+            packages = [
+                    'autoconf',
+                    'automake',
+                    'boost',
+                    'cmake',
+                    'gcc_linux-64',
+                    'gfortran_linux-64',
+                    'gxx_linux-64',
+                    'git',
+                    'gsl',
+                    'libtool',
+                    'llvm',
+                    'make',
+                    'numpy',
+                    'pkg-config',
+                    'protobuf',
+                    'subprocess32',
+                    'swig',
+                    'wget',
+                    'libpng',
+            ]
+            pythonPackages = [
+                    'cheetah',
+                    'construct',
+                    'google-auth',
+                    'grpcio',
+                    'grpcio-testing',
+                    'lxml',
+                    'mako',
+                    'matplotlib',
+                    'pybombs',
+                    'requests',
+                    'ruamel.yaml==0.15.51',
+                    'stellarstation',
+            ]
+        }
     }
 }
 

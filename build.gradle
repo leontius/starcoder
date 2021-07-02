@@ -42,13 +42,13 @@ buildscript {
 apply plugin: 'org.curioswitch.gradle-curiostack-plugin'
 apply plugin: 'org.curioswitch.gradle-golang-plugin'
 apply plugin: 'org.curioswitch.gradle-grpc-api-plugin'
-apply plugin: "org.curioswitch.gradle-conda-buildenv-plugin"
 
 repositories {
     jcenter()
     mavenCentral()
 }
 
+buildenv
 conda {
     gnuradio {
         version = 'Miniconda2-4.4.10'
@@ -384,7 +384,7 @@ task installStarcoder(type: Copy) {
 }
 
 task install {
-    dependsOn condaInstallPackagesMiniconda2Build, condaInstallPythonPackagesMiniconda2Build, toolsSetupMiniconda2Build ,installGrStarcoder, installGrStarcoderUtils, installStarcoder
+    dependsOn condaInstallPythonPackagesMiniconda2Build, installGrStarcoder, installGrStarcoderUtils, installStarcoder
 }
 
 task clangFormat(type: org.curioswitch.gradle.conda.tasks.CondaExecTask) {

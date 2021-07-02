@@ -383,7 +383,7 @@ task installStarcoder(type: Copy) {
 }
 
 task install {
-    dependsOn toolsDownloadMiniconda2Build, condaInstallPythonPackagesMiniconda2Build, installGrStarcoder, installGrStarcoderUtils, installStarcoder
+    dependsOn condaInstallPythonPackagesMiniconda2Build, installGrStarcoder, installGrStarcoderUtils, installStarcoder
 }
 
 task clangFormat(type: org.curioswitch.gradle.conda.tasks.CondaExecTask) {

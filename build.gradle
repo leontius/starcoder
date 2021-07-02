@@ -48,7 +48,6 @@ repositories {
     mavenCentral()
 }
 
-buildenv
 conda {
     gnuradio {
         version = 'Miniconda2-4.4.10'
